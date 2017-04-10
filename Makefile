@@ -6,7 +6,7 @@ all:
 	make mapping.txt
 
 clean:
-	rm -r ${OUTPUT}
+	rm -rf ${OUTPUT}
 
 code_comb.vim: symbol-combinations.txt code_comb.py
 	if [ ! -d ${OUTPUT} ]; then mkdir ${OUTPUT}; fi
