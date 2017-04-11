@@ -1,25 +1,23 @@
 OUTPUT=output
+PATCHES=patches
 
-all:
-	true
-	make code_comb.vim
-	make mapping.txt
+database.vim: output patch build_database.py
+	python build_database.py > ${OUTPUT}/database.vim
+
+patch: output mapping.txt
+	sh -c 'if [ -d ${PATCHES} ]; then for f in $$(ls -1 ${PATCHES}); do cp ${PATCHES}/$${f} ${OUTPUT}; pushd ${OUTPUT}; patch <$${f}; rm $${f}; popd; done; fi'
+
+mapping.txt: output mcbopomofo_mapping.txt
+	cat ${OUTPUT}/mcbopomofo_mapping.txt > ${OUTPUT}/mapping.txt
+
+mcbopomofo_mapping.txt: output McBopomofo/BPMFBase.txt McBopomofo/BPMFMappings.txt build_mcbopomofo_mapping.py
+	python build_mcbopomofo_mapping.py > ${OUTPUT}/mcbopomofo_mapping.txt
+
+code_comb.vim: output symbol-combinations.txt code_comb.py
+	python code_comb.py > ${OUTPUT}/code_comb.vim
+
+output:
+	if [ ! -d ${OUTPUT} ]; then mkdir ${OUTPUT}; fi
 
 clean:
 	rm -rf ${OUTPUT}
-
-code_comb.vim: symbol-combinations.txt code_comb.py
-	if [ ! -d ${OUTPUT} ]; then mkdir ${OUTPUT}; fi
-	python code_comb.py > ${OUTPUT}/code_comb.vim
-
-mcbopomofo_mapping.txt: McBopomofo/BPMFBase.txt McBopomofo/BPMFMappings.txt build_mcbopomofo_mapping.py
-	python build_mcbopomofo_mapping.py > ${OUTPUT}/mcbopomofo_mapping.txt
-
-mapping.txt: mcbopomofo_mapping.txt
-	if [ ! -d ${OUTPUT} ]; then mkdir ${OUTPUT}; fi
-	rm -f ${OUTPUT}/mapping.txt
-	cat ${OUTPUT}/mcbopomofo_mapping.txt > ${OUTPUT}/mapping.txt
-
-database.vim: mapping.txt build_databse.py
-	if [ ! -d ${OUTPUT} ]; then mkdir ${OUTPUT}; fi
-	python build_databse.py
