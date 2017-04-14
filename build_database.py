@@ -3,8 +3,12 @@ import tr
 
 tree = {}
 record_count = 0
+max_length = 0
+percentage_gate = []
+
 
 def add_word(tree, code_list, word, freq):
+    global record_count
     if code_list[0][-1] not in '3467':
         code_list[0] += ' '
 
@@ -42,19 +46,37 @@ with open('output/mapping.txt') as f:
         code_list = line[2:]
         add_word(tree, code_list, word, freq)
         record_count += 1
+        max_length = max(max_length, len(code_list))
+
+    for i in range(10, 0, -1):
+        percentage_gate.append(record_count // i)
 
 
 def gen_vim_code(tree=tree, prefix='let s:table'):
+    global print_record_count
+
     print('{} = {{}}'.format(prefix))
     if '_' in tree:
         print('{}[\'_\'] = {}'.format(prefix, tree['_']))
+        print_record_count += len(tree['_'])
+        if print_record_count >= percentage_gate[0]:
+            print('call s:log(\'Loading phonetic database... {}0%\')'.format(11 - len(percentage_gate)))
+            percentage_gate.pop(0)
 
     for k in sorted(filter(lambda x: x != '_', tree.keys())):
         if isinstance(tree[k], list):
             print('{}[\'{}\'] = {}'.format(prefix, k, tree[k]))
+            print_record_count += len(tree[k])
+            if print_record_count >= percentage_gate[0]:
+                print('call s:log(\'Loading phonetic database... {}0%\')'.format(11 - len(percentage_gate)))
+                percentage_gate.pop(0)
         else:
             gen_vim_code(tree[k], '{}[\'{}\']'.format(prefix, k))
 
 
 if __name__ == '__main__':
+    print_record_count = 0
+    print('" Database {{{')
     gen_vim_code()
+    print('" }}}')
+    print('let s:max_length = {}'.format(max_length))
