@@ -1,0 +1,1 @@
+output/phonetic_table.py
