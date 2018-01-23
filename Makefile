@@ -1,4 +1,8 @@
-all: output/phonetic_table_ipa.vim # values.py values.vim brackets1.py brackets2.py
+all: output/phonetic_table_ipa.vim output/zhuyin2ipa.vim # values.py values.vim brackets1.py brackets2.py
+
+
+output/zhuyin2ipa.vim: zhuyin-pinyin-ipa-table
+	python zhuyin2ipa.py > $@
 
 
 # brackets1.py : output/phonetic_table.py
