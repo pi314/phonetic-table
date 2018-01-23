@@ -1,4 +1,5 @@
-all: phonetic_table.py
+all: phonetic_table.py change-key.py
+	python change-key.py
 
 
 output:
