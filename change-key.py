@@ -40,5 +40,24 @@ def recursive_change_key(dst, src):
             recursive_change_key(dst[new_key], src[key])
 
 recursive_change_key(res, phonetic_table.table)
-print(code2ipa('-3'))
-print(res['əɻ214'])
+
+# print(res[code2ipa('vu84')][code2ipa('tj ')])
+#
+# exit()
+
+def gen_vim_script(table, upper):
+    if not upper:
+        print('let s:table = {}')
+    else:
+        print("let s:table['{upper}'] = {{}}".format(upper="']['".join(upper)))
+
+    for key in sorted(table.keys()):
+        if isinstance(table[key], list):
+            print("let s:table['{key}'] = {val}".format(
+                key="']['".join(upper + [key]),
+                val=table[key],
+            ))
+        else:
+            gen_vim_script(table[key], upper + [key])
+
+gen_vim_script(res, [])
