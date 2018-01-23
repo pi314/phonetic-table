@@ -40,5 +40,5 @@ def recursive_change_key(dst, src):
             recursive_change_key(dst[new_key], src[key])
 
 recursive_change_key(res, phonetic_table.table)
-print(code2ipa('hk4'))
-print(res['əɻ3'])
+print(code2ipa('-3'))
+print(res['əɻ214'])
