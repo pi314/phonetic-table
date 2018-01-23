@@ -30,4 +30,5 @@ phonetic_table.py: phonetic_table.vim | output
 
 
 clean:
-	rm -r output
+	rm -rf output
+	rm -f phonetic_table.py
